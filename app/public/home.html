@@ -5,17 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+
     <title>Document</title>
+    <style>
+        body {
+            background: black;
+        };
+    </style>
+    
 </head>
 <body>
-
-
-    <a href="/survey"><button class="btn btn-lg btn-primary">Go to Survey</button></a>
-
-
-    <a href="/api/friends">API Friends List</a>
-    |
-    <a href="https://github.com/psingh24/friend-finder" target="_blank" >Github Repo</a>
+    <div class="container">
+	<!-- MODAL -->
+    <div id="modal" class="test modal-sm" style="position: fixed; top: 50%; left: 50%; width: 30%; transform: translate(-50%, -50%);">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<img id="login-logo" src="Users/Prabhdeepsingh/Desktop/Development/friend-finder/app/public/assets/images/friends.png" alt="Friend Finder Logo">
+    				<h1 class="modal-title text-center">Friend Finder</h1>
+    				<h5 id="tagline" class="text-center">Answer a few basic questions.</h5>
+                    <h5 id="tagline" class="text-center">Then find the friend with the greatest compatibility!</h5>
+                    <br>
+              
+    			</div>
+    			<div class="modal-body text-center">
+                    <a href="/survey"><button class="btn btn-lg btn-primary">Go to Survey</button></a>
+                <br>
+                <br>
+                <div class="text-center">
+                    <a href="/api/friends">API Friends List</a>
+                    |
+                    <a href="https://github.com/psingh24/friend-finder" target="_blank" >Github Repo</a>
+                </div>
+                </div>
+            </div>
+    </div>
+</div>    
 </body>
 </html>
