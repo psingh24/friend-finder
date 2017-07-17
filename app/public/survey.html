@@ -30,6 +30,12 @@
               float: left;
               margin-right: 15px;
           }
+          .input-field {
+              width: 300px;
+              color: teal;
+          }
+    
+         
       </style>
 
     <title>Survey</title>
@@ -63,15 +69,16 @@
         <div class="questions">
             <div>
             <h5>1. Your mind is always buzzing with unexplored ideas and plans.</h5>
-            <div class="input-field col s12">
+            <div class="input-field col s5">
                 <select id="q1">
-                    <option value="" disabled selected>Choose your answer</option>
-                    <option value="1">1 (Strongly Disagree)</option>
+                    <option value="" disabled selected>Choose your option</option>
+                    <option class="test" value="1">1 (Strongly Disagree)</option>
                     <option value="2">2 (Disagree)</option>
                     <option value="3">3 (Neither Agree or Disagree)</option>
-                     <option value="4">4 (Agree)</option>
+                    <option value="4">4 (Agree)</option>
                     <option value="5">5 (Strongly Agree)</option>
                 </select>
+                <h2 id="hello"></h2>
             </div>
             </div>
             <br>
@@ -219,7 +226,7 @@
       <h4>Best Match</h4>
       <hr>
       <img src="" id="matchImg" alt="">
-      <h5>Name: <span id="matchName"></span> </h5>
+      <h5>Name: <span id="matchName"></span></h5>
     </div>
     <div class="modal-footer">
       <a class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
@@ -231,6 +238,7 @@
    $(document).ready(function() {
     $('select').material_select();
      $('.modal').modal();
+
         
 
     $("#button").on("click", function() {
@@ -241,16 +249,36 @@
             scores: [$("#q1").val(), $("#q2").val(), $("#q3").val(), $("#q4").val(), $("#q5").val(), $("#q6").val(), $("#q7").val(), $("#q8").val(), $("#q9").val(), $("#q10").val()]
         };
     
-        $.post("/api/friends", newFriend, function(data) {
-            console.log("test")
-            $("#matchName").text(data.name);
-	    	$('#matchImg').attr("src", data.photo);
+        // $.post("/api/friends", newFriend, function(data) {
+        //     console.log("test")
+        //     $("#matchName").text(data.name);
+	    // 	$('#matchImg').attr("src", data.photo);
 
-		    // Show the modal with the best match 
-		    $('#modal1').modal('open');
-        })
+		//     // Show the modal with the best match 
+		    
+        // })
+        $.ajax({
+            type:    "POST",
+            url:     "/api/friends",
+            data:    newFriend,
+            success: function(data) {
+                $("#matchName").text(data.name);
+	    	    $('#matchImg').attr("src", data.photo);
+                     $('#modal1').modal('open');
+            },
+            // vvv---- This is the new bit
+            error:   function(jqXHR, textStatus, errorThrown) {
+                    alert("Error, status = " + textStatus + ", " +
+                        "error thrown: " + errorThrown
+
+                    );
+                    console.log(textStatus)
+                    console.log(errorThrown)
+            }
+        });
         // alert("Submiting your answers..");
     //    $("#myModal").modal("toggle")
+    // $('#modal1').modal('open');
     })
 
  });
@@ -258,81 +286,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-  	<!--// Chosen CSS
-    var config = {
-      '.chosen-select'           : {},
-      '.chosen-select-deselect'  : {allow_single_deselect:true},
-      '.chosen-select-no-single' : {disable_search_threshold:10},
-      '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-      '.chosen-select-width'     : {width:"95%"}
-    }
-    for (var selector in config) {
-      $(selector).chosen(config[selector]);
-    }
-
-    // Capture the form inputs 
-    $("#submit").on("click", function(){
-
-    	// Form validation
-    	function validateForm() {
-		  var isValid = true;
-		  $('.form-control').each(function() {
-		    if ( $(this).val() === '' )
-		        isValid = false;
-		  });
-
-		  $('.chosen-select').each(function() {
-
-		  	if( $(this).val() === "")
-		  		isValid = false
-		  })
-		  return isValid;
-		}
-
-		// If all required fields are filled
-		if (validateForm() == true)
-		{
-			// Create an object for the user's data
-	    	var userData = {
-	    		name: $("#name").val(),
-	    		photo: $("#photo").val(),
-	    		scores: [$("#q1").val(), $("#q2").val(), $("#q3").val(), $("#q4").val(), $("#q5").val(), $("#q6").val(), $("#q7").val(), $("#q8").val(), $("#q9").val(), $("#q10").val(), ]
-	    	}
-
-
-	    	// Grab the URL of the website
-	    	var currentURL = window.location.origin;
-
-	    	// AJAX post the data to the friends API. 
-	    	$.post(currentURL + "/api/friends", userData, function(data){
-
-	    		// Grab the result from the AJAX post so that the best match's name and photo are displayed.
-	    		$("#matchName").text(data.name);
-	    		$('#matchImg').attr("src", data.photo);
-
-		    	// Show the modal with the best match 
-		    	$("#resultsModal").modal('toggle');
-
-	    	});
-		}
-		else
-		{
-			alert("Please fill out all fields before submitting!");
-		}
-    	
-    	return false;
-    });
-
-
-  -->
