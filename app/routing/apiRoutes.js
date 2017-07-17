@@ -24,12 +24,17 @@ module.exports = function(app) {
            
           
         }
-
+        // var match = {
+        //     name: friendsData[0].name,
+        //     photo: friendsData[0].photo
+        // }
         
-        console.log(total)
+        // console.log(match)
+
+       
 
          friendsData.push(newFriend);
-          res.json(true);
+          res.json(match);
 
 
     });
