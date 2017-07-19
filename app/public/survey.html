@@ -34,13 +34,14 @@
               width: 300px;
               color: teal;
           }
-    
+
          
       </style>
 
     <title>Survey</title>
 </head>
 <body>
+
     <div class="container">
         <div>
             <h1>Survey Question</h1>
@@ -207,20 +208,22 @@
                 </select>
             </div>
             </div>
-            <br>
-            
-        </div>
-        <div class="text-center">
-        <button class="btn btn-primary" id="button">Submit</button>
+<br>
         </div>
         
-<div class="footer">
-        <a href="/api/friends">API Friends List</a>
-            |
-        <a href="https://github.com/psingh24/friend-finder" target="_blank" >Github Repo</a>
-         <a id="morganClear" href="/api/cleartables">Clear Table</a>
-    </div>
+        <div class="text-center">
+            <button class="btn btn-primary" id="button">Submit</button>
+        </div>
+        
+        <div class="footer">
+            <a href="/api/friends">API Friends List</a>
+                |
+            <a href="https://github.com/psingh24/friend-finder" target="_blank" >Github Repo</a>
+       
+        </div>
 </div>
+
+<!--Modal -->
  <div id="modal1" class="modal modal-fixed-footer">
     <div class="modal-content">
       <h4>Best Match</h4>
@@ -234,12 +237,10 @@
   </div>
 
     
- <script type="text/javascript">
-   $(document).ready(function() {
+<script type="text/javascript">
+ $(document).ready(function() {
     $('select').material_select();
-     $('.modal').modal();
-
-        
+    $('.modal').modal();
 
     $("#button").on("click", function() {
         event.preventDefault();
@@ -249,14 +250,6 @@
             scores: [$("#q1").val(), $("#q2").val(), $("#q3").val(), $("#q4").val(), $("#q5").val(), $("#q6").val(), $("#q7").val(), $("#q8").val(), $("#q9").val(), $("#q10").val()]
         };
     
-        // $.post("/api/friends", newFriend, function(data) {
-        //     console.log("test")
-        //     $("#matchName").text(data.name);
-	    // 	$('#matchImg').attr("src", data.photo);
-
-		//     // Show the modal with the best match 
-		    
-        // })
         $.ajax({
             type:    "POST",
             url:     "/api/friends",
@@ -264,24 +257,19 @@
             success: function(data) {
                 $("#matchName").text(data.name);
 	    	    $('#matchImg').attr("src", data.photo);
-                     $('#modal1').modal('open');
+                $('#modal1').modal('open');
             },
-            // vvv---- This is the new bit
+            // vvv---- Check for errors
             error:   function(jqXHR, textStatus, errorThrown) {
                     alert("Error, status = " + textStatus + ", " +
                         "error thrown: " + errorThrown
 
                     );
-                    console.log(textStatus)
-                    console.log(errorThrown)
             }
         });
-        // alert("Submiting your answers..");
-    //    $("#myModal").modal("toggle")
-    // $('#modal1').modal('open');
-    })
 
- });
+    });
+});
  </script>
 
 </body>
