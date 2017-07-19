@@ -9,18 +9,55 @@
     <title>friend-finder</title>
     <style>
         body {
-            background: black;
+            background: #121212;
+            margin: 0;
+            overflow: hidden;
         }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        @keyframes chill {
+            from {opacity: 1;}
+            to {opacity: 1;}
+        }
+
+        @keyframes fadeOut {
+            from {opacity: 1;}
+            to {opacity: 0;}
+        }
+
+        p {
+            position: absolute;
+            top: 10px;
+            left: 12px;
+            color: white;
+            opacity: 0;
+            font-family: "Source Sans Pro";
+            animation: fadeIn 2s ease-out, chill 2s 2s, fadeOut 2s 4s;
+        }
+
         #modal {
-            position: fixed; top: 50%; left: 50%; width: 30%; transform: translate(-50%, -50%);
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            width: 30%; 
+            transform: 
+            translate(-50%, -50%);
         }
         #login-logo {
-            position: relative; left: 24px;   
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
+
     </style>
     
 </head>
 <body>
+    <p>Hold mouse down to enter time warp</p>
     <canvas id="test"></canvas>
     <div class="container">
 	<!-- MODAL -->
@@ -49,90 +86,143 @@
 </div>    
 
 <script type="text/javascript">
-var canvas = document.querySelector('canvas');
+		var canvas = document.querySelector('canvas');
+		var c = canvas.getContext('2d');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
 
-var c = canvas.getContext('2d');
-var mouse = {
-    x: undefined,
-    y: undefined
-}
-var maxRadius = 100;
-window.addEventListener("mousemove", function(event) {
-   mouse.x = event.x;
-   mouse.y = event.y;
-})
-    function Circle(x, y, dx, dy, radius) {
-        this.x = x;
-        this.y = y;
-        this.dx = dx;
-        this.dy = dy;
-        this.radius = radius;
-        this.draw = function() {
-            c.beginPath();
-            c.arc(this.x, this.y, this.radius, 0, Math.PI *2, false);
-            c.strokeStyle = "white"
-            c.stroke();
-            c.fillStyle = "#3b5998";
-            c.fill()
-        }
-        this.update = function() {
+		var particleCount = 1000;
+		var mouse = {
+			x: window.innerWidth / 2,
+			y: window.innerHeight / 2 
+		};
 
-        if (this.x + this.radius > innerWidth || this.x - this.radius < 0 ) {
-            this.dx = -this.dx;
-        } 
-        if (this.y + this.radius > innerHeight || this.y - this.radius < 0 ) {
-            this.dy = -this.dy;
-        }
+		window.addEventListener("mousemove", function(event) {
+			mouse.x = event.clientX - canvas.width / 2;
+			mouse.y = event.clientY - canvas.height / 2;
+		});
+
+		window.addEventListener("resize", function() {
+			canvas.width = window.innerWidth;	
+			canvas.height = window.innerHeight;
+
+			lightParticles = [];
+			initializeParticles();
+		});
 
 
-        this.x += this.dx;
-        this.y += this.dy;
+		function LightParticle(x, y, radius, color) {
+			this.x = x;
+			this.y = y;
+			this.radius = radius;
+			this.color = color;
 
-        if (mouse.x - this.x < 50 && mouse.x - this.x > -50 && mouse.y - this.y < 50 && mouse.y - this.y > -50)  {
-            if (this.radius < maxRadius) {
-               this.radius += 1; 
-            }
-        } else if (this.radius > 10){
-            this.radius -= 1;
-        }
+			this.update = function() {
+
+				this.draw();
+			};
+
+			this.draw = function() {
+				c.save();
+				c.beginPath();
+				c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);	
+				c.shadowColor = this.color;
+				c.shadowBlur = 15;
+				c.shadowOffsetX = 0;
+				c.shadowOffsetY = 0;
+				c.fillStyle = this.color;
+				c.fill();
+				c.closePath();
+				c.restore();
+			};
+		}
+
+		var lightParticles = [];
+
+		var timer = 0;
+		var opacity = 1;
+		var speed = 0.0005;
+		var colors = [
+			"#0952BD",
+			"#A5BFF0",
+			"#118CD6",
+			"#1AAEE8",
+			"#F2E8C9"
+		];
+
+		var initializeParticles;
+
+		(initializeParticles = function() {
+			for (var i = 0; i < particleCount; i++) {
+
+				var randomColorIndex = Math.floor(Math.random() * 6);
+				var randomRadius = Math.random() * 2;
+
+				// Ensure particles are spawned past screen width and height so
+				// there will be no missing stars when rotating canvas
+				var x = (Math.random() * (canvas.width + 200)) - (canvas.width + 200) / 2;
+				var y = (Math.random() * (canvas.width + 200)) - (canvas.width + 200) / 2;
+				lightParticles.push(new LightParticle(x, y, randomRadius, colors[randomColorIndex]));
+			}
+		})();
+
+		function animate() {
+			window.requestAnimationFrame(animate);
+
+			c.save();
+			if (isMouseDown === true) {
+
+				// Ease into the new opacity
+				var desiredOpacity = 0.01;
+				opacity += (desiredOpacity - opacity) * 0.03;
+				c.fillStyle = "rgba(18, 18, 18,"+ opacity +")";
+
+				// Ease into the new speed
+				var desiredSpeed = 0.012;
+				speed += (desiredSpeed - speed) * 0.01;
+				timer += speed;
+
+			} else {
+
+				// Ease back to the original opacity
+				var originalOpacity = 1;
+				opacity += (originalOpacity - opacity) * 0.01;
+				c.fillStyle = "rgba(18, 18, 18, " + opacity + ")";
+
+				// Ease back to the original speed
+				var originalSpeed = 0.001;
+				speed += (originalSpeed - speed) * 0.01;
+				timer += speed;
 
 
+			}
 
+			c.fillRect(0, 0, canvas.width, canvas.height);
+			c.translate(canvas.width / 2, canvas.height/2 );
+			c.rotate(timer);
 
-        this.draw();
-        }
-    }
+			for (var i = 0; i < lightParticles.length; i++) {
+				lightParticles[i].update();
+			}
 
-var circleArray = []
+			c.restore();
 
-for (var i = 0; i < 400; i++) {
-var radius = 50;
-var x = Math.random() * (innerWidth - radius * 2) + radius;
-var y =  Math.random() * (innerHeight - radius *2) + radius ;
-var dy = (Math.random() * - 0.5) * 10;
-var dx = (Math.random() * - 0.5) * 10;
-    circleArray.push(new Circle(x, y, dx, dy, radius));
-}
-var circle = new Circle(x, y, dx, dy, 30);
+			
+		}
 
+		var isMouseDown = false;
 
-    function animate() {
-        requestAnimationFrame(animate);
-        c.clearRect(0, 0, innerWidth, innerHeight);
-        
+		window.addEventListener("mousedown", function() {
+			isMouseDown = true;	
+		});
+		
 
-        for (var i =0; i < circleArray.length; i++) {
-            circleArray[i].update()
+		window.addEventListener("mouseup", function() {
+			isMouseDown = false;	
+		});
 
-
-        }
-
-    }
-
-    animate();
+		animate();
 
 
 </script>
