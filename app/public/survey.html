@@ -246,7 +246,7 @@
     $('select').material_select();
     $('.modal').modal();
 
-    $("#button").on("click", function() {
+    $("#button").on("click", function(event) {
         event.preventDefault();
         var newFriend = {
             name: $(".name").val().trim(),
