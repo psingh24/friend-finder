@@ -10,4 +10,4 @@ Technologies used:
 * Bootstrap
 
 
-![Alt text](public/assets/images/github.png?raw=true "friend")
+![Alt text](https://raw.githubusercontent.com/psingh24/friend-finder/master/app/public/assets/images/github.png "friend")
