@@ -10,4 +10,4 @@ Technologies used:
 * Bootstrap
 
 
-![Alt text](assets/images/github.png?raw=true "friend")
+![Alt text](public/assets/images/github.png?raw=true "friend")
